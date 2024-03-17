@@ -1,0 +1,37 @@
+.tile {
+  width: 360px;
+  padding: 10px 15px;
+  box-shadow: 0 0 4px rgb(32, 29, 48);
+  margin-top: 35px;
+
+  .image {
+    width: 100%;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  .description {
+    padding: 10px 0;
+    font-size: 22px;
+
+    .bottomBlock {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+
+      .rating {
+        font-weight: 600;
+        svg {
+          color: gold;
+        }
+      }
+
+      .price {
+        font-weight: 600;
+      }
+    }
+  }
+}
