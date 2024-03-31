@@ -1,4 +1,4 @@
-import Link from "@mui/material/Link";
+import { Link } from "react-router-dom";
 import classes from "./Header.module.scss";
 
 const Header = () => {
@@ -8,19 +8,13 @@ const Header = () => {
         <div className={classes.logo}>Brand Logo</div>
         <ul className={classes.links}>
           <li className={classes.link}>
-            <Link href="#" underline="none">
-              Products
-            </Link>
+            <Link to="/">Products</Link>
           </li>
           <li className={classes.link}>
-            <Link href="#" underline="none">
-              Cart
-            </Link>
+            <Link to="/cart">Cart</Link>
           </li>
           <li className={classes.link}>
-            <Link href="#" underline="none">
-              About Us
-            </Link>
+            <Link to="/about-us">About Us</Link>
           </li>
         </ul>
       </div>
