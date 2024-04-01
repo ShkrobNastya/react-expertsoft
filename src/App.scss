@@ -5,6 +5,16 @@
 }
 .container {
   max-width: 1200px;
+  position: relative;
   display: block;
   margin: 30px auto 0 auto;
+  height: calc(100vh - 92px);
+}
+.spinner {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%);
+  width: 100px !important;
+  height: 100px !important;
 }
