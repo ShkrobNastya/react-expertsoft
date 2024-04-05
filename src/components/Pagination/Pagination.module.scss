@@ -1,0 +1,13 @@
+.pagination {
+  display: flex;
+  list-style-type: none;
+  justify-content: end;
+  margin-top: 20px;
+
+  button {
+    padding: 6px 15px;
+    min-width: auto;
+    font-size: 18px;
+    margin-left: 20px;
+  }
+}
