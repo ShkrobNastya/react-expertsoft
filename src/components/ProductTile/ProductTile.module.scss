@@ -9,12 +9,33 @@
 
     img {
       width: 100%;
+      max-height: 330px;
     }
   }
 
   .description {
     padding: 10px 0;
     font-size: 22px;
+
+    .countBlock {
+      margin-top: 20px;
+      .addBtn {
+        width: 160px;
+      }
+      .count {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 160px;
+        button {
+          padding: 6px 15px;
+          min-width: auto;
+        }
+        span {
+          margin: 0 10px;
+        }
+      }
+    }
 
     .bottomBlock {
       display: flex;
