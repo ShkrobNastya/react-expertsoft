@@ -1,8 +1,9 @@
 import classes from "./Order.module.scss";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
+import OrderModel from "../../../../models/Order.model.tsx";
 
-const Order = ({ order }) => {
+const Order = ({ order }: OrderModel) => {
   return (
     <TableRow
       className={classes.wrapper}
