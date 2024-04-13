@@ -11,6 +11,8 @@ const ProductList = () => {
     error,
   } = useFetch("http://localhost:8000/products");
 
+  const { data: cart = {} } = useFetch(`http://localhost:8000/cart`);
+
   return (
     <div className={classes.container}>
       <Filters />
@@ -24,9 +26,13 @@ const ProductList = () => {
           />
         )}
         {products &&
-          products.map((product) => (
-            <ProductTile key={product.id} product={product} />
-          ))}
+          products.map((product) => {
+            const item = cart.find((cartItem) => cartItem.id === product.id);
+            const count = item?.count || 0;
+            return (
+              <ProductTile key={product.id} product={product} count={count} />
+            );
+          })}
       </div>
     </div>
   );

@@ -4,17 +4,62 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import Button from "@mui/material/Button";
 import { useState } from "react";
+import Product from "../../models/Product.model.tsx";
 
-const ProductTile = ({ product }) => {
-  const [count, setCount] = useState(0);
+const changeProductCount = (product, count) => {
+  fetch(`http://localhost:8000/cart/${product.id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      count: count,
+    }),
+  }).catch((error) => {
+    console.log("Error " + error.message);
+  });
+};
 
-  function increment() {
-    setCount(count + 1);
-  }
+const addToCart = (product, count) => {
+  fetch("http://localhost:8000/cart", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: product.id,
+      title: product.title,
+      count: count,
+      price: product.price,
+    }),
+  }).catch((error) => {
+    console.log("Error " + error.message);
+  });
+};
 
-  function decrement() {
-    setCount(count - 1);
-  }
+const removeFromCart = (product) => {
+  fetch("http://localhost:8000/cart/" + product.id, {
+    method: "DELETE",
+  }).catch((error) => {
+    console.log("Error " + error.message);
+  });
+};
+
+interface ComponentProps {
+  product: Product;
+  count: number;
+}
+
+const ProductTile = ({ product, count }: ComponentProps) => {
+  const [productCount, setProductCount] = useState(count);
+
+  const updateCount = (newCount) => {
+    if (newCount === 0) {
+      removeFromCart(product);
+    } else if (productCount === 0 && newCount > 0) {
+      addToCart(product, newCount);
+    } else {
+      changeProductCount(product, newCount);
+    }
+
+    setProductCount(newCount);
+  };
 
   return (
     <div className={classes.tile}>
@@ -24,13 +69,19 @@ const ProductTile = ({ product }) => {
       <div className={classes.description}>
         <div className={classes.title}>{product.title}</div>
         <div className={classes.countBlock}>
-          {count ? (
+          {productCount ? (
             <div className={classes.count}>
-              <Button variant="contained" onClick={decrement}>
+              <Button
+                variant="contained"
+                onClick={() => updateCount(productCount - 1)}
+              >
                 -
               </Button>
-              <span>{count}</span>
-              <Button variant="contained" onClick={increment}>
+              <span>{productCount}</span>
+              <Button
+                variant="contained"
+                onClick={() => updateCount(productCount + 1)}
+              >
                 +
               </Button>
             </div>
@@ -38,7 +89,7 @@ const ProductTile = ({ product }) => {
             <Button
               className={classes.addBtn}
               variant="contained"
-              onClick={increment}
+              onClick={() => updateCount(productCount + 1)}
             >
               Add To Cart
             </Button>

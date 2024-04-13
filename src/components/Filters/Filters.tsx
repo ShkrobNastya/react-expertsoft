@@ -1,13 +1,8 @@
 import { useState } from "react";
-import { styled } from "@mui/material/styles";
 import classes from "./Filters.module.scss";
 import Slider from "@mui/material/Slider";
 import MuiInput from "@mui/material/Input";
 import Checkbox from "@mui/material/Checkbox";
-
-const Input = styled(MuiInput)`
-  width: 42px;
-`;
 
 const Filters = () => {
   const [value, setValue] = useState<number[]>([20, 37]);
@@ -26,7 +21,7 @@ const Filters = () => {
       <div className={classes.filter}>
         <div className={classes.label}>Price</div>
         <div className={classes.inputs}>
-          <Input
+          <MuiInput
             value={value[0]}
             size="small"
             onChange={handleInputChange}
@@ -35,10 +30,9 @@ const Filters = () => {
               min: 0,
               max: 100,
               type: "number",
-              "aria-labelledby": "input-slider",
             }}
           />
-          <Input
+          <MuiInput
             value={value[1]}
             size="small"
             onChange={handleInputChange}
@@ -47,12 +41,10 @@ const Filters = () => {
               min: 0,
               max: 100,
               type: "number",
-              "aria-labelledby": "input-slider",
             }}
           />
         </div>
         <Slider
-          getAriaLabel={() => "Temperature range"}
           value={value}
           onChange={handleChange}
           valueLabelDisplay="auto"
@@ -62,7 +54,7 @@ const Filters = () => {
       <div className={classes.filter}>
         <div className={classes.label}>Rating</div>
         <div className={classes.inputs}>
-          <Input
+          <MuiInput
             value={value[0]}
             size="small"
             onChange={handleInputChange}
@@ -71,10 +63,9 @@ const Filters = () => {
               min: 0,
               max: 100,
               type: "number",
-              "aria-labelledby": "input-slider",
             }}
           />
-          <Input
+          <MuiInput
             value={value[1]}
             size="small"
             onChange={handleInputChange}
@@ -83,12 +74,10 @@ const Filters = () => {
               min: 0,
               max: 100,
               type: "number",
-              "aria-labelledby": "input-slider",
             }}
           />
         </div>
         <Slider
-          getAriaLabel={() => "Temperature range"}
           value={value}
           onChange={handleChange}
           valueLabelDisplay="auto"
