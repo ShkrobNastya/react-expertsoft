@@ -10,7 +10,7 @@ import Order from "./components/Order";
 import Pagination from "../../components/Pagination";
 import CircularProgress from "@mui/material/CircularProgress";
 import useFetch from "../../hooks/useFetch";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 const Cart = () => {
   const {
@@ -29,53 +29,55 @@ const Cart = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="container">
-      <div className={classes.wrapper}>
-        {error && <div>{error}</div>}
-        {isPending && (
-          <CircularProgress
-            sx={{ width: "100px" }}
-            color="inherit"
-            className="spinner"
-          />
-        )}
-        {cart && (
-          <div>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell className={classes.tableTitle}>
-                      Product ID
-                    </TableCell>
-                    <TableCell className={classes.tableTitle} align="right">
-                      Product Name
-                    </TableCell>
-                    <TableCell className={classes.tableTitle} align="right">
-                      Count
-                    </TableCell>
-                    <TableCell className={classes.tableTitle} align="right">
-                      Price
-                    </TableCell>
-                    <TableCell align="right">Total Price</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {currentOrders.map((order) => (
-                    <Order key={order.id} order={order} />
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Pagination
-              ordersPerPage={ordersPerPage}
-              totalOrders={cart?.length}
-              paginate={paginate}
+    <Suspense fallback={<CircularProgress />}>
+      <div className="container">
+        <div className={classes.wrapper}>
+          {error && <div>{error}</div>}
+          {isPending && (
+            <CircularProgress
+              sx={{ width: "100px" }}
+              color="inherit"
+              className="spinner"
             />
-          </div>
-        )}
+          )}
+          {cart && (
+            <div>
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className={classes.tableTitle}>
+                        Product ID
+                      </TableCell>
+                      <TableCell className={classes.tableTitle} align="right">
+                        Product Name
+                      </TableCell>
+                      <TableCell className={classes.tableTitle} align="right">
+                        Count
+                      </TableCell>
+                      <TableCell className={classes.tableTitle} align="right">
+                        Price
+                      </TableCell>
+                      <TableCell align="right">Total Price</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {currentOrders.map((order) => (
+                      <Order key={order.id} order={order} />
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <Pagination
+                ordersPerPage={ordersPerPage}
+                totalOrders={cart?.length}
+                paginate={paginate}
+              />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 };
 
