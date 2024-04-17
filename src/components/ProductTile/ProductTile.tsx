@@ -64,10 +64,10 @@ const ProductTile = ({ product, count }: ComponentProps) => {
   return (
     <div className={classes.tile}>
       <div className={classes.image}>
-        <img src={product.image || noimage} alt="product image" />
+        <img src={product?.image || noimage} alt="product image" />
       </div>
       <div className={classes.description}>
-        <div className={classes.title}>{product.title}</div>
+        <div className={classes.title}>{product?.title}</div>
         <div className={classes.countBlock}>
           {productCount ? (
             <div className={classes.count}>
@@ -97,9 +97,9 @@ const ProductTile = ({ product, count }: ComponentProps) => {
         </div>
         <div className={classes.bottomBlock}>
           <div className={classes.rating}>
-            <FontAwesomeIcon icon={faStar} /> {product.rating.rate}
+            <FontAwesomeIcon icon={faStar} /> {product?.rating?.rate}
           </div>
-          <div className={classes.price}>{product.price}$</div>
+          <div className={classes.price}>{product?.price}$</div>
         </div>
       </div>
     </div>

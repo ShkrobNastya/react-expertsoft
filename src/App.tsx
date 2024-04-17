@@ -3,7 +3,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { Outlet } from "react-router-dom";
 import "./App.scss";
 import Header from "./components/Header";
-import { createContext, useMemo, useState } from "react";
+import { Suspense, createContext, useMemo, useState } from "react";
+import { CircularProgress } from "@mui/material";
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -33,7 +34,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Header />
-        <Outlet />
+        <Suspense fallback={<CircularProgress />}>
+          <Outlet />
+        </Suspense>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

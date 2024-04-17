@@ -3,18 +3,18 @@ import classes from "./Filters.module.scss";
 import Slider from "@mui/material/Slider";
 import MuiInput from "@mui/material/Input";
 import Checkbox from "@mui/material/Checkbox";
+import withFilters from "./withFilters";
 
-const Filters = () => {
-  const [value, setValue] = useState<number[]>([20, 37]);
-
-  const handleChange = (event: Event, newValue: number | number[]) => {
-    setValue(newValue as number[]);
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value === "" ? 0 : Number(event.target.value));
-  };
-
+const Filters = ({
+  priceRange,
+  ratingRange,
+  inStock,
+  hasReviews,
+  handlePriceChange,
+  handleRatingChange,
+  handleInStockChange,
+  handleHasReviewsChange
+}) => {
   return (
     <div className={classes.filters}>
       <div className={classes.title}>Filters</div>
@@ -22,9 +22,9 @@ const Filters = () => {
         <div className={classes.label}>Price</div>
         <div className={classes.inputs}>
           <MuiInput
-            value={value[0]}
+            value={priceRange[0]}
             size="small"
-            onChange={handleInputChange}
+            onChange={(e) => handlePriceChange(+e.target.value, 'from')}
             inputProps={{
               step: 10,
               min: 0,
@@ -33,9 +33,9 @@ const Filters = () => {
             }}
           />
           <MuiInput
-            value={value[1]}
+            value={priceRange[1]}
             size="small"
-            onChange={handleInputChange}
+            onChange={(e) => handlePriceChange(+e.target.value, 'to')}
             inputProps={{
               step: 10,
               min: 0,
@@ -45,55 +45,66 @@ const Filters = () => {
           />
         </div>
         <Slider
-          value={value}
-          onChange={handleChange}
+          value={priceRange}
+          onChange={(_e, value, activeThumb) => handlePriceChange(value, activeThumb === 0 ? 'from' : 'to')}
           valueLabelDisplay="auto"
           disableSwap
+          min={0}
+          max={100}
         />
       </div>
       <div className={classes.filter}>
         <div className={classes.label}>Rating</div>
         <div className={classes.inputs}>
           <MuiInput
-            value={value[0]}
+            value={ratingRange[0]}
             size="small"
-            onChange={handleInputChange}
+            onChange={(e) => handleRatingChange(+e.target.value, 'from')}
             inputProps={{
-              step: 10,
+              step: 0.1,
               min: 0,
-              max: 100,
+              max: 5,
               type: "number",
             }}
           />
           <MuiInput
-            value={value[1]}
+            value={ratingRange[1]}
             size="small"
-            onChange={handleInputChange}
+            onChange={(e) => handleRatingChange(+e.target.value, 'to')}
             inputProps={{
-              step: 10,
+              step: 0.1,
               min: 0,
-              max: 100,
+              max: 5,
               type: "number",
             }}
           />
         </div>
         <Slider
-          value={value}
-          onChange={handleChange}
+          value={ratingRange}
+          onChange={(_e, value, activeThumb) => handleRatingChange(value, activeThumb === 0 ? 'from' : 'to')}
           valueLabelDisplay="auto"
           disableSwap
+          min={0}
+          max={5}
+          step={0.1}
         />
       </div>
       <div className={classes.filter}>
         <div className={classes.label}>Stock Presence</div>
         <div className={classes.inputs}>
-          <Checkbox />
+          <Checkbox
+            checked={inStock}
+            onChange={(_e, isChecked) => handleInStockChange(isChecked)}
+          />
         </div>
       </div>
       <div className={classes.filter}>
         <div className={classes.label}>Reviews Presence</div>
         <div className={classes.inputs}>
-          <Checkbox />
+          <Checkbox
+            checked={hasReviews}
+            onChange={(_e, isChecked) => handleHasReviewsChange(isChecked)}
+          />
         </div>
       </div>
     </div>
