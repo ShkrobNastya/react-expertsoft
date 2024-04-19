@@ -4,16 +4,21 @@ import { Outlet } from "react-router-dom";
 import "./App.scss";
 import Header from "./components/Header";
 import { Suspense, createContext, useMemo, useState } from "react";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, PaletteMode } from "@mui/material";
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 function App() {
-  const [mode, setMode] = useState<"light" | "dark">("light");
+  const storedTheme = localStorage.getItem("theme") as PaletteMode;
+  const [mode, setMode] = useState<PaletteMode>(storedTheme || 'light');
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+        setMode((prevMode) => {
+          const newMode = prevMode === 'light' ? 'dark' : 'light';
+          localStorage.setItem('theme', newMode);
+          return newMode;
+        });
       },
     }),
     [],

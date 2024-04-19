@@ -1,9 +1,9 @@
-import { useState } from "react";
 import classes from "./Filters.module.scss";
 import Slider from "@mui/material/Slider";
 import MuiInput from "@mui/material/Input";
 import Checkbox from "@mui/material/Checkbox";
-import withFilters from "./withFilters";
+import { FilterPropsType } from "./withFilters";
+import Button from "@mui/material/Button";
 
 const Filters = ({
   priceRange,
@@ -13,8 +13,9 @@ const Filters = ({
   handlePriceChange,
   handleRatingChange,
   handleInStockChange,
-  handleHasReviewsChange
-}) => {
+  handleHasReviewsChange,
+  handleClearFilters
+}: FilterPropsType) => {
   return (
     <div className={classes.filters}>
       <div className={classes.title}>Filters</div>
@@ -24,7 +25,7 @@ const Filters = ({
           <MuiInput
             value={priceRange[0]}
             size="small"
-            onChange={(e) => handlePriceChange(+e.target.value, 'from')}
+            onChange={(e) => handlePriceChange(+e.target.value, "from")}
             inputProps={{
               step: 10,
               min: 0,
@@ -35,7 +36,7 @@ const Filters = ({
           <MuiInput
             value={priceRange[1]}
             size="small"
-            onChange={(e) => handlePriceChange(+e.target.value, 'to')}
+            onChange={(e) => handlePriceChange(+e.target.value, "to")}
             inputProps={{
               step: 10,
               min: 0,
@@ -46,7 +47,9 @@ const Filters = ({
         </div>
         <Slider
           value={priceRange}
-          onChange={(_e, value, activeThumb) => handlePriceChange(value, activeThumb === 0 ? 'from' : 'to')}
+          onChange={(_e, value, activeThumb) =>
+            handlePriceChange(value, activeThumb === 0 ? "from" : "to")
+          }
           valueLabelDisplay="auto"
           disableSwap
           min={0}
@@ -59,7 +62,7 @@ const Filters = ({
           <MuiInput
             value={ratingRange[0]}
             size="small"
-            onChange={(e) => handleRatingChange(+e.target.value, 'from')}
+            onChange={(e) => handleRatingChange(+e.target.value, "from")}
             inputProps={{
               step: 0.1,
               min: 0,
@@ -70,7 +73,7 @@ const Filters = ({
           <MuiInput
             value={ratingRange[1]}
             size="small"
-            onChange={(e) => handleRatingChange(+e.target.value, 'to')}
+            onChange={(e) => handleRatingChange(+e.target.value, "to")}
             inputProps={{
               step: 0.1,
               min: 0,
@@ -81,7 +84,9 @@ const Filters = ({
         </div>
         <Slider
           value={ratingRange}
-          onChange={(_e, value, activeThumb) => handleRatingChange(value, activeThumb === 0 ? 'from' : 'to')}
+          onChange={(_e, value, activeThumb) =>
+            handleRatingChange(value, activeThumb === 0 ? "from" : "to")
+          }
           valueLabelDisplay="auto"
           disableSwap
           min={0}
@@ -107,6 +112,13 @@ const Filters = ({
           />
         </div>
       </div>
+      <Button
+        className={classes.clearBtn}
+        variant="contained"
+        onClick={handleClearFilters}
+      >
+        Remove all filters
+      </Button>
     </div>
   );
 };

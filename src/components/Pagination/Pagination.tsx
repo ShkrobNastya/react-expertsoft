@@ -1,7 +1,14 @@
 import Button from "@mui/material/Button";
 import classes from "./Pagination.module.scss";
 
-const Pagination = ({ ordersPerPage, totalOrders, paginate }) => {
+interface PaginationProps {
+  ordersPerPage: number;
+  totalOrders: number;
+  paginate: (pageNumber: number) => void;
+  currentPage: number;
+}
+
+const Pagination = ({ ordersPerPage, totalOrders, paginate, currentPage }: PaginationProps) => {
   const pageNumbers = [];
 
   for (let i = 1; i <= Math.ceil(totalOrders / ordersPerPage); i++) {
@@ -13,7 +20,11 @@ const Pagination = ({ ordersPerPage, totalOrders, paginate }) => {
       <ul className={classes.pagination}>
         {pageNumbers.map((number) => (
           <li key={number} className="page-item">
-            <Button onClick={() => paginate(number)} variant="contained">
+            <Button
+              onClick={() => paginate(number)}
+              className={number === currentPage ? classes.activePage : ''}
+              variant="contained"
+            >
               {number}
             </Button>
           </li>

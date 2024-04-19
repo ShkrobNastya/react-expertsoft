@@ -1,9 +1,15 @@
 import classes from "./Order.module.scss";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import OrderModel from "../../../../models/Order.model.tsx";
+import OrderType from "../../../../models/Order.model.tsx";
+import ClearIcon from "@mui/icons-material/Clear";
 
-const Order = ({ order }: OrderModel) => {
+interface OrderProps {
+  order: OrderType;
+  removeOrder: (orderId: number) => void;
+}
+
+const Order = ({ order, removeOrder }: OrderProps) => {
   return (
     <TableRow
       className={classes.wrapper}
@@ -17,6 +23,13 @@ const Order = ({ order }: OrderModel) => {
       <TableCell align="right">{order.count}</TableCell>
       <TableCell align="right">{order.price}</TableCell>
       <TableCell align="right">{order.count * order.price}</TableCell>
+      <TableCell
+        align="right"
+        className={classes.crossButton}
+        onClick={() => removeOrder(order.id)}
+      >
+        <ClearIcon />
+      </TableCell>
     </TableRow>
   );
 };

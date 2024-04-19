@@ -4,9 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import Button from "@mui/material/Button";
 import { useState } from "react";
-import Product from "../../models/Product.model.tsx";
+import ProductType from "../../models/Product.model.tsx";
 
-const changeProductCount = (product, count) => {
+const changeProductCount = (product: ProductType, count: number) => {
   fetch(`http://localhost:8000/cart/${product.id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -18,7 +18,7 @@ const changeProductCount = (product, count) => {
   });
 };
 
-const addToCart = (product, count) => {
+const addToCart = (product: ProductType, count: number) => {
   fetch("http://localhost:8000/cart", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -33,7 +33,7 @@ const addToCart = (product, count) => {
   });
 };
 
-const removeFromCart = (product) => {
+const removeFromCart = (product: ProductType) => {
   fetch("http://localhost:8000/cart/" + product.id, {
     method: "DELETE",
   }).catch((error) => {
@@ -41,15 +41,15 @@ const removeFromCart = (product) => {
   });
 };
 
-interface ComponentProps {
-  product: Product;
+interface ProductTileProps {
+  product: ProductType;
   count: number;
 }
 
-const ProductTile = ({ product, count }: ComponentProps) => {
+const ProductTile = ({ product, count }: ProductTileProps) => {
   const [productCount, setProductCount] = useState(count);
 
-  const updateCount = (newCount) => {
+  const updateCount = (newCount: number) => {
     if (newCount === 0) {
       removeFromCart(product);
     } else if (productCount === 0 && newCount > 0) {
