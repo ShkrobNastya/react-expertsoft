@@ -3,6 +3,11 @@
   flex-wrap: wrap;
   justify-content: space-between;
   max-width: 1200px;
+
+  .noProducts {
+    margin-top: 35px;
+    font-size: 35px;
+  }
 }
 .container {
   display: flex;
