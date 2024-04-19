@@ -2,39 +2,44 @@ import ProductTile from "../../components/ProductTile";
 import classes from "./ProductList.module.scss";
 import CircularProgress from "@mui/material/CircularProgress";
 import Filters from "../../components/Filters";
-import {Suspense} from "react";
-import withFilters from "../../components/Filters/withFilters";
+import { Suspense } from "react";
+import withFilters, {
+  FilterPropsType,
+} from "../../components/Filters/withFilters";
 import useProducts from "./useProducts";
 
-const ProductList = (filterProps) => {
-  const { products, cart, error, isLoading, isPending } = useProducts({ filterProps });
-    
+const ProductList = (filterProps: FilterPropsType) => {
+  const { products, cart, error, isLoading, isPending } = useProducts({
+    filterProps,
+  });
+
   return (
     <Suspense fallback={<CircularProgress />}>
-        <div className={classes.container}>
+      <div className={classes.container}>
         <Filters {...filterProps} />
         <div className={classes.wrapper}>
-            {error && <div>{error}</div>}
-            {isPending && (
-                <CircularProgress
-                sx={{ width: "100px" }}
-                color="inherit"
-                className="spinner"
-                />
-            )}
-            {products &&
-                products.map((product) => {
-                    const item = cart?.find((cartItem) => cartItem.id === product.id);
-                    const count = item?.count || 0;
-                    return (
-                        <ProductTile key={product.id} product={product} count={count} />
-                    );
-                })}
-            {isLoading && (
-                <CircularProgress />
-            )}
+          {error && <div>{error}</div>}
+          {isPending && (
+            <CircularProgress
+              sx={{ width: "100px" }}
+              color="inherit"
+              className="spinner"
+            />
+          )}
+          {!products.length && (
+            <div className={classes.noProducts}>No Products found</div>
+          )}
+          {products &&
+            products.map((product) => {
+              const item = cart?.find((cartItem) => cartItem.id === product.id);
+              const count = item?.count || 0;
+              return (
+                <ProductTile key={product.id} product={product} count={count} />
+              );
+            })}
+          {isLoading && <CircularProgress />}
         </div>
-        </div>
+      </div>
     </Suspense>
   );
 };

@@ -7,9 +7,9 @@ import App from "./App";
 // import Cart from "./Pages/Cart";
 // import AboutUs from "./Pages/AboutUs";
 
-const Cart = React.lazy(() => import('./Pages/Cart'));
-const AboutUs = React.lazy(() => import('./Pages/AboutUs'));
-const ProductList = React.lazy(() => import('./Pages/ProductList'));
+const Cart = React.lazy(() => import("./Pages/Cart"));
+const AboutUs = React.lazy(() => import("./Pages/AboutUs"));
+const ProductList = React.lazy(() => import("./Pages/ProductList"));
 
 const router = createBrowserRouter([
   {

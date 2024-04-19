@@ -5,6 +5,8 @@ npm run dev
 
 start json server:
 npx json-server --watch data/db.json --port 8000
+if one filter case not work:
+npx json-server@0.17.4 --watch data/db.json --port 8000
 
 run prettier:
 npx prettier --write src

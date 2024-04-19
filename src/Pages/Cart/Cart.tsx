@@ -9,24 +9,40 @@ import Paper from "@mui/material/Paper";
 import Order from "./components/Order";
 import Pagination from "../../components/Pagination";
 import CircularProgress from "@mui/material/CircularProgress";
+import OrderType from "../../models/Order.model.tsx";
 import useFetch from "../../hooks/useFetch";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 const Cart = () => {
-  const {
-    data: cart = [],
-    isPending,
-    error,
-  } = useFetch("http://localhost:8000/cart");
+  const { data, isPending, error } = useFetch<OrderType[]>(
+    "http://localhost:8000/cart",
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(2);
+  const [cart, setCart] = useState(data || []);
 
   const indexOfLastPost = currentPage * ordersPerPage;
   const indexOfFirstPost = indexOfLastPost - ordersPerPage;
   const currentOrders = cart?.slice(indexOfFirstPost, indexOfLastPost);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handlePageChange = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const removeOrder = (orderId: number) => {
+    fetch("http://localhost:8000/cart/" + orderId, {
+      method: "DELETE",
+    })
+      .then(() => {
+        setCart(cart.filter(({ id }) => id !== orderId));
+      })
+      .catch((error) => {
+        console.log("Error " + error.message);
+      });
+  };
+
+  useEffect(() => {
+    setCart(data || []);
+  }, [data]);
 
   return (
     <Suspense fallback={<CircularProgress />}>
@@ -39,6 +55,9 @@ const Cart = () => {
               color="inherit"
               className="spinner"
             />
+          )}
+          {!cart?.length && (
+            <div className={classes.emptyCart}>No Products found</div>
           )}
           {cart && (
             <div>
@@ -59,11 +78,16 @@ const Cart = () => {
                         Price
                       </TableCell>
                       <TableCell align="right">Total Price</TableCell>
+                      <TableCell align="right"></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {currentOrders.map((order) => (
-                      <Order key={order.id} order={order} />
+                      <Order
+                        key={order.id}
+                        order={order}
+                        removeOrder={removeOrder}
+                      />
                     ))}
                   </TableBody>
                 </Table>
@@ -71,7 +95,8 @@ const Cart = () => {
               <Pagination
                 ordersPerPage={ordersPerPage}
                 totalOrders={cart?.length}
-                paginate={paginate}
+                paginate={handlePageChange}
+                currentPage={currentPage}
               />
             </div>
           )}
