@@ -9,57 +9,49 @@ import Paper from "@mui/material/Paper";
 import Order from "./components/Order";
 import Pagination from "../../components/Pagination";
 import CircularProgress from "@mui/material/CircularProgress";
-import OrderType from "../../models/Order.model.tsx";
-import useFetch from "../../hooks/useFetch";
 import { Suspense, useEffect, useState } from "react";
+import { IInitialState } from "../../redux/Reducers.tsx";
+import { fetchCart, removeItemFromCart } from "../../redux/thunks/cart.ts";
+import { useAppDispatch, useAppSelector } from "../../redux/utils.ts";
+
 
 const Cart = () => {
-  const { data, isPending, error } = useFetch<OrderType[]>(
-    "http://localhost:8000/cart",
-  );
-
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(2);
-  const [cart, setCart] = useState(data || []);
+  const { items, isLoading, error } = useAppSelector((state:IInitialState) => state.cart);
+
+  const dispatch = useAppDispatch();
 
   const indexOfLastPost = currentPage * ordersPerPage;
   const indexOfFirstPost = indexOfLastPost - ordersPerPage;
-  const currentOrders = cart?.slice(indexOfFirstPost, indexOfLastPost);
+  const currentOrders = items?.slice(indexOfFirstPost, indexOfLastPost);
 
   const handlePageChange = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const removeOrder = (orderId: number) => {
-    fetch("http://localhost:8000/cart/" + orderId, {
-      method: "DELETE",
-    })
-      .then(() => {
-        setCart(cart.filter(({ id }) => id !== orderId));
-      })
-      .catch((error) => {
-        console.log("Error " + error.message);
-      });
-  };
+    dispatch(removeItemFromCart(orderId));
+  }
 
   useEffect(() => {
-    setCart(data || []);
-  }, [data]);
+    dispatch(fetchCart());
+  }, [dispatch, items.length]);
 
   return (
     <Suspense fallback={<CircularProgress />}>
       <div className="container">
         <div className={classes.wrapper}>
           {error && <div>{error}</div>}
-          {isPending && (
+          {isLoading && (
             <CircularProgress
               sx={{ width: "100px" }}
               color="inherit"
               className="spinner"
             />
           )}
-          {!cart?.length && (
+          {!items?.length && (
             <div className={classes.emptyCart}>No Products found</div>
           )}
-          {cart && (
+          {items && (
             <div>
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -94,7 +86,7 @@ const Cart = () => {
               </TableContainer>
               <Pagination
                 ordersPerPage={ordersPerPage}
-                totalOrders={cart?.length}
+                totalOrders={items?.length}
                 paginate={handlePageChange}
                 currentPage={currentPage}
               />

@@ -7,11 +7,13 @@ import withFilters, {
   FilterPropsType,
 } from "../../components/Filters/withFilters";
 import useProducts from "./useProducts";
+import { useAppSelector } from "../../redux/utils";
 
 const ProductList = (filterProps: FilterPropsType) => {
-  const { products, cart, error, isLoading, isPending } = useProducts({
+  const { products, error, isLoading, isPending } = useProducts({
     filterProps,
   });
+  const cart = useAppSelector(state => state.cart);
 
   return (
     <Suspense fallback={<CircularProgress />}>
@@ -19,7 +21,7 @@ const ProductList = (filterProps: FilterPropsType) => {
         <Filters {...filterProps} />
         <div className={classes.wrapper}>
           {error && <div>{error}</div>}
-          {isPending && (
+          {(isPending || cart.isLoading) && (
             <CircularProgress
               sx={{ width: "100px" }}
               color="inherit"
@@ -31,13 +33,13 @@ const ProductList = (filterProps: FilterPropsType) => {
           )}
           {products &&
             products.map((product) => {
-              const item = cart?.find((cartItem) => cartItem.id === product.id);
+              const item = cart?.items?.find((cartItem) => cartItem.id === product.id);
               const count = item?.count || 0;
               return (
                 <ProductTile key={product.id} product={product} count={count} />
               );
             })}
-          {isLoading && <CircularProgress />}
+          {(isLoading || cart.isLoading) && <CircularProgress />}
         </div>
       </div>
     </Suspense>
