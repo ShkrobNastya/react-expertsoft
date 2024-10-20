@@ -6,7 +6,11 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateFilters } from "../../redux/Actions";
+import { useAppSelector } from "../../redux/utils";
+import { DEFAULT_MAX_PRICE, DEFAULT_MAX_RATE, DEFAULT_MIN_PRICE, DEFAULT_MIN_RATE, IInitialState } from "../../redux/Reducers";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 const throttle = (func: Function, limit: number) => {
@@ -19,11 +23,6 @@ const throttle = (func: Function, limit: number) => {
     }
   };
 };
-
-const DEFAULT_MIN_PRICE = 0;
-const DEFAULT_MAX_PRICE = 100;
-const DEFAULT_MIN_RATE = 0;
-const DEFAULT_MAX_RATE = 5;
 
 export type FilterPropsType = {
   priceRange: number[];
@@ -39,32 +38,27 @@ export type FilterPropsType = {
 
 const withFilters = (WrappedComponent: FunctionComponent<FilterPropsType>) => {
   const WithFilters = () => {
+    const filters = useAppSelector((state: IInitialState) => state.filters);
+
     const [searchParams] = useSearchParams();
-    const minPrice = Number(searchParams.get("price_gte")) || DEFAULT_MIN_PRICE;
-    const maxPrice = Number(searchParams.get("price_lte")) || DEFAULT_MAX_PRICE;
-    const minRate =
-      Number(searchParams.get("rating.rate_gte")) || DEFAULT_MIN_RATE;
-    const maxrate =
-      Number(searchParams.get("rating.rate_lte")) || DEFAULT_MAX_RATE;
-    const isInStock = !!searchParams.get("stock_gt");
-    const reviewsExist = !!searchParams.get("rating.count_gte");
+
+    const minPrice = Number(searchParams.get("price_gte")) || filters.priceRange[0];
+    const maxPrice = Number(searchParams.get("price_lte")) || filters.priceRange[1];
+    const minRate = Number(searchParams.get("rating.rate_gte")) || filters.ratingRange[0];
+    const maxRate = Number(searchParams.get("rating.rate_lte")) || filters.ratingRange[1];
+    const isInStock = !!searchParams.get("stock_gt") || filters.inStock;
+    const reviewsExist = !!searchParams.get("rating.count_gte") || filters.hasReviews;
 
     const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
-    const [ratingRange, setRatingRange] = useState([minRate, maxrate]);
+    const [ratingRange, setRatingRange] = useState([minRate, maxRate]);
     const [inStock, setInStock] = useState(isInStock);
     const [hasReviews, setHasReviews] = useState(reviewsExist);
 
-    const location = useLocation();
-    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
-      if (!location.search) {
-        setPriceRange([DEFAULT_MIN_PRICE, DEFAULT_MAX_PRICE]);
-        setRatingRange([DEFAULT_MIN_RATE, DEFAULT_MAX_RATE]);
-        setInStock(false);
-        setHasReviews(false);
-      }
-    }, [location]);
+      dispatch(updateFilters({ priceRange, ratingRange, inStock, hasReviews }))
+    }, [dispatch, priceRange, ratingRange, inStock, hasReviews])
 
     const handleRangeChange = (
       value: number | number[],
@@ -110,7 +104,17 @@ const withFilters = (WrappedComponent: FunctionComponent<FilterPropsType>) => {
     };
 
     const handleClearFilters = () => {
-      navigate("/");
+      setPriceRange([DEFAULT_MIN_PRICE, DEFAULT_MAX_PRICE]);
+      setRatingRange([DEFAULT_MIN_RATE, DEFAULT_MAX_RATE]);
+      setInStock(false);
+      setHasReviews(false);
+
+      dispatch(updateFilters({
+        priceRange: [DEFAULT_MIN_PRICE, DEFAULT_MAX_PRICE],
+        ratingRange: [DEFAULT_MIN_RATE, DEFAULT_MAX_RATE],
+        inStock: false,
+        hasReviews: false,
+      }))
     };
 
     const filterProps: FilterPropsType = {

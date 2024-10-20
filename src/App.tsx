@@ -38,10 +38,10 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Header />
-        <Suspense fallback={<CircularProgress />}>
-          <Outlet />
-        </Suspense>
+          <Header />
+          <Suspense fallback={<CircularProgress />}>
+            <Outlet />
+          </Suspense>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

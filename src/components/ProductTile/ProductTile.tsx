@@ -5,57 +5,24 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import ProductType from "../../models/Product.model.tsx";
-
-const changeProductCount = (product: ProductType, count: number) => {
-  fetch(`http://localhost:8000/cart/${product.id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      count: count,
-    }),
-  }).catch((error) => {
-    console.log("Error " + error.message);
-  });
-};
-
-const addToCart = (product: ProductType, count: number) => {
-  fetch("http://localhost:8000/cart", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      id: product.id,
-      title: product.title,
-      count: count,
-      price: product.price,
-    }),
-  }).catch((error) => {
-    console.log("Error " + error.message);
-  });
-};
-
-const removeFromCart = (product: ProductType) => {
-  fetch("http://localhost:8000/cart/" + product.id, {
-    method: "DELETE",
-  }).catch((error) => {
-    console.log("Error " + error.message);
-  });
-};
-
+import { useAppDispatch } from "../../redux/utils.ts";
+import { addItemToCart, removeItemFromCart, updateCartItemCount } from "../../redux/thunks/cart.ts";
 interface ProductTileProps {
   product: ProductType;
   count: number;
 }
 
 const ProductTile = ({ product, count }: ProductTileProps) => {
+  const dispatch = useAppDispatch();
   const [productCount, setProductCount] = useState(count);
 
   const updateCount = (newCount: number) => {
     if (newCount === 0) {
-      removeFromCart(product);
+      dispatch(removeItemFromCart(product.id));
     } else if (productCount === 0 && newCount > 0) {
-      addToCart(product, newCount);
+      dispatch(addItemToCart(product, newCount));
     } else {
-      changeProductCount(product, newCount);
+      dispatch(updateCartItemCount(product.id, newCount));
     }
 
     setProductCount(newCount);
